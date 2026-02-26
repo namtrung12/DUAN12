@@ -43,6 +43,18 @@
     $categories = $categoryModel->getAll();
     $productModel = new Product();
     $allProducts = $productModel->getAll();
+    
+    // Debug: Hiển thị thông tin
+    if (empty($allProducts)) {
+        echo "<div style='background: #ffc; border: 2px solid #fa0; padding: 15px; margin: 20px; border-radius: 8px;'>";
+        echo "<strong>⚠️ CẢNH BÁO:</strong> Không có sản phẩm nào trong database!<br>";
+        echo "Vui lòng kiểm tra:<br>";
+        echo "1. Database 'du_an1' đã được import chưa?<br>";
+        echo "2. Bảng 'products' có dữ liệu không?<br>";
+        echo "3. Các sản phẩm có status=1 và deleted_at=NULL không?<br>";
+        echo "</div>";
+    }
+    
     $featuredProducts = array_slice($allProducts, 0, 4);
     $bestSellerProducts = array_slice($allProducts, 4, 4);
     ?>

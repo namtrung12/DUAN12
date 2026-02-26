@@ -6,27 +6,51 @@ class Product extends BaseModel
 
     public function getAll()
     {
-        $sql = "SELECT p.*, c.name as category_name FROM {$this->table} p 
-                LEFT JOIN categories c ON p.category_id = c.id 
-                WHERE p.status = 1 AND p.deleted_at IS NULL
-                ORDER BY p.created_at DESC";
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll();
+        try {
+            $sql = "SELECT p.*, c.name as category_name FROM {$this->table} p 
+                    LEFT JOIN categories c ON p.category_id = c.id 
+                    WHERE p.status = 1 AND p.deleted_at IS NULL
+                    ORDER BY p.created_at DESC";
+            $stmt = $this->pdo->query($sql);
+            $result = $stmt->fetchAll();
+            
+            // Debug: Hiển thị số lượng sản phẩm tìm thấy
+            if (empty($result)) {
+                error_log("⚠️ Không tìm thấy sản phẩm nào với status=1 và deleted_at IS NULL");
+            }
+            
+            return $result;
+        } catch (PDOException $e) {
+            error_log("❌ Lỗi truy vấn getAll(): " . $e->getMessage());
+            return [];
+        }
     }
 
     public function getAllPaginated($page = 1, $perPage = 6)
     {
-        $offset = ($page - 1) * $perPage;
-        $sql = "SELECT p.*, c.name as category_name FROM {$this->table} p 
-                LEFT JOIN categories c ON p.category_id = c.id 
-                WHERE p.status = 1 AND p.deleted_at IS NULL
-                ORDER BY p.created_at DESC
-                LIMIT :limit OFFSET :offset";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        try {
+            $offset = ($page - 1) * $perPage;
+            $sql = "SELECT p.*, c.name as category_name FROM {$this->table} p 
+                    LEFT JOIN categories c ON p.category_id = c.id 
+                    WHERE p.status = 1 AND p.deleted_at IS NULL
+                    ORDER BY p.created_at DESC
+                    LIMIT :limit OFFSET :offset";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            
+            // Debug
+            if (empty($result)) {
+                error_log("⚠️ getAllPaginated: Không có sản phẩm (page=$page, perPage=$perPage)");
+            }
+            
+            return $result;
+        } catch (PDOException $e) {
+            error_log("❌ Lỗi getAllPaginated(): " . $e->getMessage());
+            return [];
+        }
     }
 
     public function countAll()

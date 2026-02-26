@@ -116,6 +116,22 @@
                 </div>
 
                 <?php if (empty($products)): ?>
+                <div style="background: #ffc; border: 2px solid #fa0; padding: 20px; margin: 20px 0; border-radius: 8px;">
+                    <h3 style="color: #c60; margin-bottom: 10px;">⚠️ Không tìm thấy sản phẩm</h3>
+                    <p><strong>Nguyên nhân có thể:</strong></p>
+                    <ol style="margin-left: 20px;">
+                        <li>Database chưa có dữ liệu sản phẩm</li>
+                        <li>Tất cả sản phẩm có status=0 (đã tắt)</li>
+                        <li>Tất cả sản phẩm đã bị xóa (deleted_at không NULL)</li>
+                        <li>Lỗi kết nối database</li>
+                    </ol>
+                    <p><strong>Giải pháp:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>Vào phpMyAdmin, chạy query: <code>SELECT * FROM products WHERE status=1 AND deleted_at IS NULL</code></li>
+                        <li>Nếu không có kết quả, import lại file SQL hoặc thêm sản phẩm mới</li>
+                        <li>Hoặc cập nhật: <code>UPDATE products SET status=1, deleted_at=NULL</code></li>
+                    </ul>
+                </div>
                 <div class="text-center py-20">
                     <span class="material-icons text-6xl text-gray-300 mb-4">search_off</span>
                     <p class="text-slate-500 text-lg">Không tìm thấy sản phẩm nào</p>
