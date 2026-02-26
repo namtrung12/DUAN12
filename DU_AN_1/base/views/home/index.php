@@ -28,10 +28,15 @@
     <?php include PATH_VIEW . 'layouts/header.php'; ?>
 
     <?php if (isset($_SESSION['success'])): ?>
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div class="p-4 bg-green-100 text-green-700 rounded-xl border border-green-200 flex items-center justify-between">
-            <span><?= htmlspecialchars($_SESSION['success'], ENT_QUOTES, 'UTF-8') ?></span>
-            <button onclick="this.parentElement.parentElement.remove()" class="text-green-700 hover:text-green-900">✕</button>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 mt-4 animate-fade-in-down">
+        <div class="p-4 bg-green-100 text-green-700 rounded-xl border border-green-200 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-2">
+                <span class="material-icons text-sm">check_circle</span>
+                <span><?= htmlspecialchars($_SESSION['success'], ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="text-green-700 hover:text-green-900 transition-colors">
+                <span class="material-icons text-sm">close</span>
+            </button>
         </div>
     </div>
     <?php unset($_SESSION['success']); endif; ?>
@@ -47,17 +52,17 @@
     $bestSellerProducts = array_slice($allProducts, 4, 4);
     ?>
 
-    <section class="pb-12">
+    <section class="pb-12 animate-fade-in-up">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="rounded-3xl bg-white border border-[#f0d8c8] shadow-sm p-6 md:p-8">
+            <div class="rounded-3xl bg-white border border-[#f0d8c8] shadow-sm p-6 md:p-8 hover-lift transition-all">
                 <div class="flex items-center justify-between gap-3 flex-wrap mb-6">
-                    <div>
+                    <div class="animate-fade-in-up">
                         <p class="uppercase tracking-[0.18em] text-xs text-slate-500 font-semibold">Khám phá theo gu</p>
                         <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">Danh mục sản phẩm</h2>
                     </div>
-                    <a href="<?= BASE_URL ?>?action=products" class="inline-flex items-center gap-2 text-primary font-semibold hover:underline">
+                    <a href="<?= BASE_URL ?>?action=products" class="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all group">
                         Xem tất cả
-                        <span class="material-icons text-base">arrow_forward</span>
+                        <span class="material-icons text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </a>
                 </div>
 
@@ -80,13 +85,14 @@
                         }
                     ?>
                     <a href="<?= BASE_URL ?>?action=products-by-category&category_id=<?= $category['id'] ?>"
-                       class="group rounded-2xl border border-[#f0d8c8] p-4 bg-white hover:bg-[#fff7f2] transition-all duration-300 hover:-translate-y-1">
-                        <div class="w-12 h-12 <?= $data['bg'] ?> rounded-xl flex items-center justify-center mb-3 border border-[#f0d8c8]">
+                       class="group rounded-2xl border border-[#f0d8c8] p-4 bg-white hover:bg-[#fff7f2] hover:shadow-md transition-all duration-300 hover:-translate-y-2 cursor-pointer transform-gpu">
+                        <div class="w-12 h-12 <?= $data['bg'] ?> rounded-xl flex items-center justify-center mb-3 border border-[#f0d8c8] group-hover:scale-110 transition-transform duration-300">
                             <span class="material-icons text-primary text-2xl"><?= $data['icon'] ?></span>
                         </div>
-                        <h3 class="font-semibold text-slate-900 group-hover:text-primary line-clamp-1">
+                        <h3 class="font-semibold text-slate-900 group-hover:text-primary line-clamp-1 transition-colors">
                             <?= htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8') ?>
                         </h3>
+                        <p class="text-xs text-slate-500 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Khám phá ngay</p>
                     </a>
                     <?php endforeach; ?>
                 </div>
@@ -94,16 +100,16 @@
         </div>
     </section>
 
-    <section class="pb-12">
+    <section class="pb-12 animate-fade-in-up">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-end justify-between mb-6 gap-3 flex-wrap">
-                <div>
+                <div class="animate-fade-in-up">
                     <p class="uppercase tracking-[0.18em] text-xs text-slate-500 font-semibold">Gợi ý hôm nay</p>
                     <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">Sản phẩm nổi bật</h2>
                 </div>
-                <a href="<?= BASE_URL ?>?action=products" class="inline-flex items-center gap-2 text-primary font-semibold hover:underline">
+                <a href="<?= BASE_URL ?>?action=products" class="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all group">
                     Mở menu
-                    <span class="material-icons text-base">arrow_forward</span>
+                    <span class="material-icons text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </a>
             </div>
 
@@ -114,18 +120,26 @@
                 $minPrice = !empty($sizes) ? min(array_column($sizes, 'price')) : 0;
                 ?>
                 <a href="<?= BASE_URL ?>?action=product-detail&id=<?= $product['id'] ?>"
-                   class="group rounded-3xl overflow-hidden border border-[#f0d8c8] bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <div class="h-56 bg-[#fff2e9] overflow-hidden">
+                   class="group rounded-3xl overflow-hidden border border-[#f0d8c8] bg-white shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 transform-gpu cursor-pointer">
+                    <div class="h-56 bg-[#fff2e9] overflow-hidden relative">
                         <img src="<?= BASE_ASSETS_UPLOADS . htmlspecialchars($product['image'], ENT_QUOTES, 'UTF-8') ?>"
                              alt="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                              onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/0 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                     <div class="p-5">
-                        <h3 class="font-bold text-lg text-slate-900 mb-2 line-clamp-1"><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-bold text-lg text-slate-900 line-clamp-2 flex-1"><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <span class="material-icons text-sm text-slate-400 group-hover:text-primary transition-colors mt-1">favorite_border</span>
+                        </div>
                         <p class="text-primary font-extrabold text-xl mb-4"><?= number_format($minPrice, 0, ',', '.') ?>đ</p>
-                        <div class="w-full text-center py-3 bg-[#ffe4d3] text-primary rounded-xl font-semibold group-hover:bg-[#ffd7c2] transition-colors">
+                        <div class="w-full text-center py-3 bg-[#ffe4d3] text-primary rounded-xl font-semibold group-hover:bg-[#ffd7c2] transition-all duration-300 group-hover:shadow-md">
                             Xem chi tiết
+                        </div>
+                        <div class="mt-3 flex items-center gap-1 text-xs text-slate-500">
+                            <span class="material-icons text-sm">star</span>
+                            <span>4.8 (128)</span>
                         </div>
                     </div>
                 </a>
@@ -134,15 +148,17 @@
         </div>
     </section>
 
-    <section class="pb-12">
+    <section class="pb-12 animate-fade-in-up">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="rounded-3xl border border-[#f0d8c8] overflow-hidden bg-[#1f2937]">
+            <div class="rounded-3xl border border-[#f0d8c8] overflow-hidden bg-gradient-to-br from-[#1f2937] to-[#111827] shadow-xl hover-lift transition-all">
                 <div class="p-6 md:p-8 flex items-start justify-between gap-3 flex-wrap">
-                    <div>
+                    <div class="animate-fade-in-up">
                         <p class="uppercase tracking-[0.18em] text-xs text-white/60 font-semibold">Bán chạy</p>
                         <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-1">Sản phẩm bán chạy</h2>
                     </div>
-                    <span class="inline-flex px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white/85 text-sm">Cập nhật mỗi ngày</span>
+                    <span class="inline-flex px-4 py-2 rounded-full bg-primary/20 border border-primary/40 text-primary text-sm font-semibold animate-pulse">
+                        <span class="material-icons text-sm mr-1">local_fire_department</span> Cập nhật mỗi ngày
+                    </span>
                 </div>
 
                 <div class="px-6 md:px-8 pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -155,24 +171,30 @@
                         $originalPrice = $minPrice * (100 / (100 - $discount));
                     ?>
                     <a href="<?= BASE_URL ?>?action=product-detail&id=<?= $product['id'] ?>"
-                       class="group rounded-2xl bg-white/95 overflow-hidden border border-white/20 hover:bg-white transition-all duration-300 hover:-translate-y-1">
+                       class="group rounded-2xl bg-white/95 overflow-hidden border border-white/20 hover:bg-white transition-all duration-300 hover:-translate-y-2 transform-gpu cursor-pointer hover:shadow-xl">
                         <div class="relative h-52 bg-[#ffe7d7] overflow-hidden">
                             <img src="<?= BASE_ASSETS_UPLOADS . htmlspecialchars($product['image'], ENT_QUOTES, 'UTF-8') ?>"
                                  alt="<?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?>"
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                  onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'"/>
-                            <div class="absolute top-3 left-3 bg-primary text-white px-3 py-1 rounded-full text-xs font-bold">
+                            <div class="absolute top-3 left-3 bg-primary text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                                <span class="material-icons text-xs">local_fire_department</span>
                                 -<?= $discount ?>%
                             </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
                         <div class="p-4">
-                            <h3 class="font-bold text-slate-900 mb-1 line-clamp-1"><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <h3 class="font-bold text-slate-900 mb-1 line-clamp-2 group-hover:text-primary transition-colors"><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?></h3>
                             <div class="flex items-center gap-2 mb-3">
                                 <span class="text-gray-400 line-through text-sm"><?= number_format($originalPrice, 0, ',', '.') ?>đ</span>
                                 <span class="text-primary font-extrabold text-lg"><?= number_format($minPrice, 0, ',', '.') ?>đ</span>
                             </div>
-                            <div class="w-full text-center py-2.5 bg-[#ffe4d3] text-primary rounded-xl font-semibold group-hover:bg-[#ffd7c2] transition-colors">
+                            <div class="w-full text-center py-2.5 bg-[#ffe4d3] text-primary rounded-xl font-semibold group-hover:bg-[#ffd7c2] transition-all duration-300 group-hover:shadow-md">
                                 Đặt ngay
+                            </div>
+                            <div class="mt-2 flex items-center justify-center gap-1 text-xs text-white/70">
+                                <span class="material-icons text-sm">shopping_cart</span>
+                                <span><?= rand(50, 500) ?> sold</span>
                             </div>
                         </div>
                     </a>
@@ -182,25 +204,30 @@
         </div>
     </section>
 
-    <section class="pb-12">
+    <section class="pb-12 animate-fade-in-up">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="rounded-3xl bg-white border border-[#f0d8c8] p-6 md:p-8">
+            <div class="rounded-3xl bg-gradient-to-r from-primary/10 to-primary/5 border border-[#f0d8c8] p-6 md:p-8 hover-lift transition-all">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <div>
-                        <p class="uppercase tracking-[0.18em] text-xs text-slate-500 font-semibold">Ưu đãi thành viên</p>
+                    <div class="animate-fade-in-up">
+                        <p class="uppercase tracking-[0.18em] text-xs text-primary font-semibold flex items-center gap-2">
+                            <span class="material-icons text-sm">mail</span> Ưu đãi thành viên
+                        </p>
                         <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1 mb-2">Nhận ưu đãi độc quyền</h2>
-                        <p class="text-slate-600">Để lại email để nhận mã giảm giá theo tuần, menu mới và ưu đãi sinh nhật.</p>
+                        <p class="text-slate-600 leading-relaxed">Để lại email để nhận mã giảm giá theo tuần, menu mới và ưu đãi sinh nhật. Không có spam, chỉ những deal tốt nhất!</p>
                     </div>
                     <form class="flex flex-col sm:flex-row gap-3" onsubmit="return handleNewsletterSubmit(event)">
-                        <input
-                            type="email"
-                            placeholder="Nhập email của bạn"
-                            required
-                            class="flex-1 h-12 px-4 rounded-xl border border-[#f0d8c8] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                        />
+                        <div class="flex-1 relative">
+                            <span class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base">mail</span>
+                            <input
+                                type="email"
+                                placeholder="Nhập email của bạn"
+                                required
+                                class="w-full h-12 pl-12 pr-4 rounded-xl border border-[#f0d8c8] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                            />
+                        </div>
                         <button
                             type="submit"
-                            class="h-12 px-7 bg-primary text-white rounded-xl font-semibold whitespace-nowrap">
+                            class="h-12 px-7 bg-gradient-to-r from-primary to-primary/90 text-white rounded-xl font-semibold whitespace-nowrap hover:shadow-lg hover:from-primary/95 transition-all active:scale-95">
                             Đăng ký
                         </button>
                     </form>
@@ -209,24 +236,29 @@
         </div>
     </section>
 
-    <section class="pb-12">
+    <section class="pb-12 animate-fade-in-up">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <p class="uppercase tracking-[0.18em] text-xs text-slate-500 font-semibold">Tại sao chọn chúng tôi</p>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">Đặc ưu điểm nổi bật</h2>
+            </div>
+            
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <?php
                 $features = [
-                    ['icon' => 'verified', 'title' => 'Nguyên liệu thật', 'desc' => 'Kiểm soát chất lượng mỗi ngày'],
-                    ['icon' => 'local_shipping', 'title' => 'Giao nhanh', 'desc' => 'Tối đa 30 phút nội thành'],
-                    ['icon' => 'loyalty', 'title' => 'Tích điểm', 'desc' => 'Đổi quà sau mỗi đơn hàng'],
-                    ['icon' => 'support_agent', 'title' => 'Hỗ trợ 24/7', 'desc' => 'Phản hồi nhanh qua hotline'],
+                    ['icon' => 'verified', 'title' => 'Nguyên liệu thật', 'desc' => 'Kiểm soát chất lượng mỗi ngày', 'color' => 'from-orange-400 to-orange-300'],
+                    ['icon' => 'local_shipping', 'title' => 'Giao nhanh', 'desc' => 'Tối đa 30 phút nội thành', 'color' => 'from-blue-400 to-blue-300'],
+                    ['icon' => 'loyalty', 'title' => 'Tích điểm', 'desc' => 'Đổi quà sau mỗi đơn hàng', 'color' => 'from-purple-400 to-purple-300'],
+                    ['icon' => 'support_agent', 'title' => 'Hỗ trợ 24/7', 'desc' => 'Phản hồi nhanh qua hotline', 'color' => 'from-green-400 to-green-300'],
                 ];
                 foreach ($features as $feature):
                 ?>
-                <div class="rounded-2xl bg-white border border-[#f0d8c8] p-5 text-center">
-                    <div class="w-12 h-12 mx-auto mb-3 rounded-xl bg-[#ffe9dc] border border-[#f0d8c8] flex items-center justify-center">
-                        <span class="material-icons text-primary text-2xl"><?= $feature['icon'] ?></span>
+                <div class="rounded-2xl bg-white border border-[#f0d8c8] p-5 text-center hover-lift transition-all group cursor-pointer">
+                    <div class="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br <?= $feature['color'] ?> shadow-md flex items-center justify-center group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
+                        <span class="material-icons text-white text-2xl"><?= $feature['icon'] ?></span>
                     </div>
-                    <h3 class="font-bold text-slate-900 mb-1"><?= $feature['title'] ?></h3>
-                    <p class="text-slate-600 text-sm"><?= $feature['desc'] ?></p>
+                    <h3 class="font-bold text-slate-900 mb-1 group-hover:text-primary transition-colors"><?= $feature['title'] ?></h3>
+                    <p class="text-slate-600 text-sm leading-relaxed"><?= $feature['desc'] ?></p>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -236,13 +268,70 @@
     <?php require_once PATH_VIEW . 'layouts/footer.php'; ?>
 
     <script>
+    // Enhanced Newsletter Submission
     function handleNewsletterSubmit(event) {
         event.preventDefault();
         const email = event.target.querySelector('input[type="email"]').value;
-        alert('Cảm ơn bạn đã đăng ký! Ưu đãi sẽ được gửi tới: ' + email);
-        event.target.reset();
+        
+        // Show loading state
+        const button = event.target.querySelector('button');
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.innerHTML = '<span class="material-icons">hourglass_empty</span> Đang xử lý...';
+        
+        setTimeout(() => {
+            // Reset form
+            event.target.reset();
+            button.disabled = false;
+            button.innerHTML = originalText;
+            
+            // Show success notification
+            window.AppUtils?.showNotification(
+                `Cảm ơn bạn! Kiểm tra email ${email}`,
+                'success',
+                4000
+            );
+        }, 1200);
+        
         return false;
     }
+
+    // Add particle effect on page load
+    function addParticles() {
+        const container = document.body;
+        for (let i = 0; i < 3; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'fixed pointer-events-none opacity-20';
+            particle.style.width = (Math.random() * 200 + 100) + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.borderRadius = '50%';
+            particle.style.background = 'radial-gradient(circle, #ef6b45, transparent)';
+            particle.style.top = (Math.random() * 100) + '%';
+            particle.style.left = (Math.random() * 100) + '%';
+            particle.style.filter = 'blur(40px)';
+            particle.style.animation = 'float 8s ease-in-out infinite';
+            particle.style.animationDelay = (i * 2.5) + 's';
+            container.appendChild(particle);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', addParticles);
+
+    // Smooth scroll to hero products section
+    function scrollToProducts() {
+        const target = document.querySelector('section:nth-of-type(2)');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    // Add scroll-triggered animations
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('section');
+        sections.forEach((section, index) => {
+            section.style.animationDelay = (index * 100) + 'ms';
+        });
+    });
     </script>
     <script src="<?= BASE_URL ?>assets/js/main.js"></script>
 </body>

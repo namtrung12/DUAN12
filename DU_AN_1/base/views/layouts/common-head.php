@@ -1,5 +1,6 @@
 <!-- Common Head - Include this in all pages -->
 <link href="<?= BASE_URL ?>assets/css/style.css" rel="stylesheet"/>
+<link href="<?= BASE_URL ?>assets/css/animations.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
 <script src="<?= BASE_URL ?>assets/js/icon-fallback.js"></script>
