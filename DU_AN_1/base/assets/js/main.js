@@ -12,6 +12,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Global keyboard handler (Escape key closes menus for accessibility)
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+        // Hide mobile menu if open
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+        }
+        // Blur any focused drop-down triggers to close menus
+        document.querySelectorAll('button[aria-haspopup], a[aria-haspopup]').forEach(el => {
+            if (el === document.activeElement) el.blur();
+        });
+    }
+});
+
 // Confirm delete actions
 function confirmDelete(message = 'Bạn có chắc chắn muốn xóa?') {
     return confirm(message);

@@ -54,7 +54,7 @@ $isOffers = (strpos($currentAction, 'loyalty') === 0);
                 </a>
 
                 <!-- Navigation -->
-                <nav class="hidden xl:flex items-center gap-2 p-1 rounded-full bg-[#fff1e8] border border-[#f0d8c8]">
+                <nav role="navigation" aria-label="Main menu" class="hidden xl:flex items-center gap-2 p-1 rounded-full bg-[#fff1e8] border border-[#f0d8c8]">
                     <a href="<?= BASE_URL ?>"
                        class="px-4 py-2 rounded-full font-semibold text-sm transition-colors <?= $isHome ? 'bg-primary text-white' : 'text-slate-700 hover:bg-white' ?>">
                         Trang Chủ
@@ -104,7 +104,7 @@ $isOffers = (strpos($currentAction, 'loyalty') === 0);
                     $notifications = $notificationModel->getByUserId($_SESSION['user']['id'], 5);
                     ?>
                     <div class="relative group">
-                        <a href="<?= BASE_URL ?>?action=notifications" class="relative p-2.5 bg-[#fff4ec] hover:bg-[#ffe8da] rounded-full transition-colors inline-block border border-[#f0d8c8]">
+                        <a href="<?= BASE_URL ?>?action=notifications" aria-label="Notifications" class="relative p-2.5 bg-[#fff4ec] hover:bg-[#ffe8da] rounded-full transition-colors inline-block border border-[#f0d8c8]">
                             <span class="material-icons text-slate-700">notifications</span>
                             <?php if ($unreadCount > 0): ?>
                             <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
@@ -155,7 +155,7 @@ $isOffers = (strpos($currentAction, 'loyalty') === 0);
                     <?php endif; ?>
 
                     <!-- Cart -->
-                    <a href="<?= BASE_URL ?>?action=cart" class="relative p-2.5 bg-[#fff4ec] hover:bg-[#ffe8da] rounded-full transition-colors border border-[#f0d8c8]">
+                    <a href="<?= BASE_URL ?>?action=cart" aria-label="Shopping cart" class="relative p-2.5 bg-[#fff4ec] hover:bg-[#ffe8da] rounded-full transition-colors border border-[#f0d8c8]">
                         <span class="material-icons text-slate-700">shopping_cart</span>
                         <?php if (isset($_SESSION['user'])): ?>
                             <?php
@@ -180,7 +180,7 @@ $isOffers = (strpos($currentAction, 'loyalty') === 0);
                     }
                     ?>
                     <div class="relative group">
-                        <button class="flex items-center gap-2 p-2 hover:bg-[#fff1e8] rounded-xl transition-colors border border-transparent hover:border-[#f0d8c8]">
+                        <button aria-haspopup="true" aria-expanded="false" class="flex items-center gap-2 p-2 hover:bg-[#fff1e8] rounded-xl transition-colors border border-transparent hover:border-[#f0d8c8]">
                             <?php
                             $avatarUrl = !empty($currentAvatar)
                                 ? BASE_URL . $currentAvatar
@@ -240,7 +240,7 @@ $isOffers = (strpos($currentAction, 'loyalty') === 0);
                     <?php endif; ?>
 
                     <!-- Mobile Menu Button -->
-                    <button class="lg:hidden p-2.5 bg-[#fff4ec] hover:bg-[#ffe8da] rounded-xl border border-[#f0d8c8]" onclick="toggleMobileMenu()">
+                    <button aria-label="Open mobile menu" class="lg:hidden p-2.5 bg-[#fff4ec] hover:bg-[#ffe8da] rounded-xl border border-[#f0d8c8]" onclick="toggleMobileMenu()">
                         <span class="material-icons text-slate-700">menu</span>
                     </button>
                 </div>
