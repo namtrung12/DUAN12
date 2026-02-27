@@ -24,12 +24,20 @@ class SettingsController
 
     public function index()
     {
+        /*
+         * NGHIỆP VỤ #15: Admin cấu hình hệ thống.
+         * Trang này hiển thị các setting động (tên shop, liên hệ, logo, banner...).
+         */
         $settings = $this->getSettings();
         require_once PATH_VIEW . 'admin/settings.php';
     }
 
     public function update()
     {
+        /*
+         * NGHIỆP VỤ #15 (cập nhật cấu hình):
+         * Ghi lại setting text + upload logo/banner vào DB để giao diện client đọc và hiển thị theo cấu hình mới.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-settings');
             exit;

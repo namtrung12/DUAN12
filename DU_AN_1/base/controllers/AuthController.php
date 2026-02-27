@@ -21,6 +21,11 @@ class AuthController
 
     public function login()
     {
+        /*
+         * NGHIỆP VỤ #4: Đăng nhập hệ thống.
+         * Validate dữ liệu đầu vào, kiểm tra mật khẩu, kiểm tra trạng thái khóa tài khoản.
+         * Khi thành công: tạo session user để dùng cho toàn bộ flow đặt hàng/admin.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=login');
             exit;
@@ -106,6 +111,11 @@ class AuthController
 
     public function register()
     {
+        /*
+         * NGHIỆP VỤ #4: Đăng ký tài khoản.
+         * Validate họ tên/email/sđt/mật khẩu và đảm bảo email chưa tồn tại.
+         * Khi thành công: lưu user mới (role mặc định khách hàng) để user đăng nhập sử dụng hệ thống.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=register');
             exit;
@@ -173,6 +183,7 @@ class AuthController
 
     public function logout()
     {
+        // Kết thúc phiên đăng nhập: xóa session để đảm bảo bảo mật.
         session_destroy();
         header('Location: ' . BASE_URL . '?action=login');
         exit;

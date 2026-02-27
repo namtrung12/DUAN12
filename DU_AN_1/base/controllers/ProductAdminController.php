@@ -41,6 +41,10 @@ class ProductAdminController
 
     public function create()
     {
+        /*
+         * NGHIỆP VỤ #9: Admin thêm sản phẩm.
+         * Chuẩn bị dữ liệu phụ trợ (category/size/topping) để dựng form tạo mới.
+         */
         $productModel = $this->productModel;
         $categories = $this->categoryModel->getAll();
         $allSizes = $this->productModel->getAllSizes();
@@ -64,7 +68,8 @@ class ProductAdminController
 
         $errors = [];
 
-        // Upload ảnh TRƯỚC để lưu vào session nếu có lỗi validation
+        // PHẦN NAM - CRUD SẢN PHẨM (CREATE):
+        // Upload ảnh trước để nếu validate fail thì vẫn giữ ảnh tạm trong session.
         $imagePath = '';
         $tempImagePath = $_SESSION['old']['temp_image'] ?? ''; // Lấy ảnh tạm từ session nếu có
         
@@ -105,7 +110,7 @@ class ProductAdminController
             $errors['category'] = 'Vui lòng chọn danh mục sản phẩm';
         }
 
-        // Kiểm tra bắt buộc chọn ít nhất 1 size
+        // Sản phẩm bắt buộc có ít nhất 1 size hợp lệ (size được tick + có giá > 0).
         $sizes = $_POST['sizes'] ?? [];
         $prices = $_POST['prices'] ?? [];
         $hasValidSize = false;
@@ -128,9 +133,10 @@ class ProductAdminController
         }
 
         try {
+            // Dùng transaction để tạo product + sizes + toppings theo kiểu "all or nothing".
             $this->productModel->pdo->beginTransaction();
 
-            // Insert product
+            // 1) Tạo bản ghi chính trong bảng products.
             $sql = "INSERT INTO products (name, category_id, description, image, status) 
                     VALUES (:name, :category_id, :description, :image, :status)";
             $stmt = $this->productModel->pdo->prepare($sql);
@@ -144,7 +150,7 @@ class ProductAdminController
             
             $productId = $this->productModel->pdo->lastInsertId();
 
-            // Insert sizes (đã validate ở trên)
+            // 2) Gắn các size và giá vào bảng product_sizes.
             foreach ($sizes as $sizeId) {
                 if (!empty($prices[$sizeId])) {
                     $sql = "INSERT INTO product_sizes (product_id, size_id, price) 
@@ -158,7 +164,7 @@ class ProductAdminController
                 }
             }
 
-            // Insert toppings
+            // 3) Gắn topping tùy chọn vào bảng product_toppings.
             $toppings = $_POST['toppings'] ?? [];
             foreach ($toppings as $toppingId) {
                 $sql = "INSERT INTO product_toppings (product_id, topping_id) 
@@ -183,6 +189,10 @@ class ProductAdminController
 
     public function edit()
     {
+        /*
+         * NGHIỆP VỤ #9: Admin sửa sản phẩm.
+         * Nạp dữ liệu hiện có để chỉnh sửa thông tin chính + size + topping.
+         */
         $id = $_GET['id'] ?? 0;
         $product = $this->productModel->getById($id);
 
@@ -239,7 +249,8 @@ class ProductAdminController
             $errors['sizes'] = 'Vui lòng chọn ít nhất 1 size và nhập giá';
         }
 
-        // Handle image upload
+        // PHẦN NAM - CRUD SẢN PHẨM (UPDATE):
+        // Nếu có ảnh mới thì thay ảnh, không thì giữ ảnh cũ.
         $imagePath = $currentImage;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -274,12 +285,14 @@ class ProductAdminController
         try {
             $this->productModel->pdo->beginTransaction();
 
-           
-            // Update product info
+            // 1) Cập nhật thông tin chính của sản phẩm.
             $this->productModel->updateWithImage($id, $name, $categoryId, $description, $imagePath, $status);
 
             
-            // Xử lý Size (đã validate ở trên)
+            // 2) Đồng bộ size:
+            // - Có sẵn thì update giá.
+            // - Chưa có thì insert.
+            // - Bỏ chọn thì xóa (nếu không vướng dữ liệu đơn hàng).
             // 1. Lấy danh sách size hiện có trong DB của sản phẩm này
             $stmtExisting = $this->productModel->pdo->prepare("SELECT size_id FROM product_sizes WHERE product_id = :product_id");
             $stmtExisting->execute([':product_id' => $id]);
@@ -326,7 +339,7 @@ class ProductAdminController
                     }
                 }
             }
-            // Xử lý Topping
+            // 3) Đồng bộ topping: xóa mapping cũ rồi thêm mapping mới.
             $toppings = $_POST['toppings'] ?? [];
         
 
@@ -356,6 +369,10 @@ class ProductAdminController
 
     public function delete()
     {
+        /*
+         * NGHIỆP VỤ #9: Admin xóa sản phẩm (soft delete).
+         * Có chặn xóa nếu sản phẩm đã xuất hiện trong đơn hàng để tránh vỡ dữ liệu lịch sử.
+         */
         $id = $_GET['id'] ?? 0;
 
         // Kiểm tra sản phẩm có trong đơn hàng không
@@ -378,6 +395,7 @@ class ProductAdminController
 
     public function deleteMultiple()
     {
+        // NGHIỆP VỤ #9: xóa nhiều sản phẩm một lần với cùng rule an toàn dữ liệu như xóa đơn lẻ.
         $ids = $_GET['ids'] ?? '';
         
         if (empty($ids)) {

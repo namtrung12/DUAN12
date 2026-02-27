@@ -121,11 +121,6 @@
                                                 <input type="hidden" name="order_id" value="<?= $order['id'] ?>" />
                                                 <button type="submit" class="w-full px-3 py-2 text-sm bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition-colors whitespace-nowrap">Đã nhận hàng</button>
                                             </form>
-                                            <form method="POST" action="<?= BASE_URL ?>?action=order-delivery-cancel" class="flex-1" onsubmit="return confirm('Bạn chắc chắn muốn từ chối nhận / trả hàng cho đơn này?');">
-                                                <input type="hidden" name="order_id" value="<?= $order['id'] ?>" />
-                                                <input type="hidden" name="cancel_reason" value="Khách từ chối nhận khi đang giao" />
-                                                <button type="submit" class="w-full px-3 py-2 text-sm border border-red-300 text-red-600 rounded-lg font-semibold hover:bg-red-50 transition-colors whitespace-nowrap">Từ chối nhận</button>
-                                            </form>
                                         <?php endif; ?>
                                         <?php if ($order['status'] === 'completed'): ?>
                                             <a href="<?= BASE_URL ?>?action=order-reorder&order_id=<?= $order['id'] ?>" class="flex-1 text-center px-3 py-2 text-sm bg-primary text-white rounded-lg hover:opacity-90 transition-colors font-semibold whitespace-nowrap">Mua lại</a>

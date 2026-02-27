@@ -13,6 +13,12 @@ class ProductController
 
     public function index()
     {
+        /*
+         * NGHIỆP VỤ #1 (Bảng phân công): Người dùng xem danh sách sản phẩm.
+         * Mục tiêu: hiển thị sản phẩm theo dạng danh sách, có phân trang và hỗ trợ tìm kiếm.
+         * Dữ liệu dùng: bảng products (đã lọc status=1, deleted_at IS NULL), categories.
+         * Kết quả mong đợi: trang menu có thể duyệt nhanh, giới hạn số lượng theo trang.
+         */
         $categories = $this->categoryModel->getAll();
         
         // Phân trang (8 sản phẩm/trang, từ sản phẩm thứ 9 mới phân trang)
@@ -36,6 +42,10 @@ class ProductController
 
     public function byCategory()
     {
+        /*
+         * NGHIỆP VỤ #1 (mở rộng): lọc danh sách sản phẩm theo danh mục.
+         * Kết hợp với phân trang để khi danh mục có nhiều sản phẩm vẫn tải nhanh.
+         */
         $categoryId = $_GET['category_id'] ?? 0;
         $category = $this->categoryModel->getById($categoryId);
         
@@ -58,6 +68,11 @@ class ProductController
 
     public function detail()
     {
+        /*
+         * NGHIỆP VỤ #2: Người dùng xem chi tiết sản phẩm.
+         * Màn hình chi tiết gom đủ dữ liệu: thông tin sản phẩm + size + topping + review + điểm đánh giá.
+         * Đây là dữ liệu đầu vào quan trọng cho flow "thêm vào giỏ" ở nghiệp vụ #3.
+         */
         $id = $_GET['id'] ?? 0;
         $product = $this->productModel->getById($id);
 

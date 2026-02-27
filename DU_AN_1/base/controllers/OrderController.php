@@ -33,6 +33,10 @@ class OrderController
 
     public function checkout()
     {
+        /*
+         * NGHIỆP VỤ #5 (bước chuẩn bị): hiển thị trang checkout.
+         * Mục tiêu: tổng hợp cart item + địa chỉ giao hàng + coupon + phí ship để user xác nhận trước khi đặt.
+         */
         $cartItems = $this->cartModel->getByUserId($_SESSION['user']['id']);
         
         if (empty($cartItems)) {
@@ -126,6 +130,14 @@ class OrderController
 
     public function process()
     {
+        /*
+         * NGHIỆP VỤ #5: Người dùng đặt hàng.
+         * Kết quả DB mong đợi:
+         * - Tạo đơn ở bảng orders.
+         * - Tạo các dòng chi tiết ở order_items + order_item_toppings.
+         * - Xóa item tương ứng khỏi cart sau khi đặt thành công.
+         * Ghi chú: flow này cũng xử lý coupon, ship fee và thanh toán ví/VNPay/COD.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=checkout');
             exit;
@@ -215,6 +227,7 @@ class OrderController
             ];
         }
 
+        // NGHIỆP VỤ #6: chuyển mã đã áp dụng ở cart thành giá trị giảm thực tế khi tạo đơn.
         $discount = 0;
         $couponId = null;
         // Lấy rank của user để kiểm tra coupon
@@ -397,6 +410,11 @@ class OrderController
 
     public function index()
     {
+        /*
+         * NGHIỆP VỤ #13 + #16:
+         * - #13: Người dùng xem lịch sử đơn hàng.
+         * - #16: Theo dõi trạng thái đơn để biết thời điểm được phép hủy.
+         */
         // Tự động hoàn thành các đơn hàng đang giao quá 30 phút
         $this->orderModel->autoCompleteDeliveringOrders();
         
@@ -406,6 +424,10 @@ class OrderController
 
     public function detail()
     {
+        /*
+         * NGHIỆP VỤ #13 (chi tiết đơn): xem thông tin đầy đủ của 1 đơn hàng.
+         * Bao gồm sản phẩm, topping, trạng thái thanh toán và trạng thái vận chuyển.
+         */
         $orderId = $_GET['id'] ?? 0;
         $order = $this->orderModel->getById($orderId);
 
@@ -427,6 +449,11 @@ class OrderController
 
     public function cancel()
     {
+        /*
+         * NGHIỆP VỤ #16: Người dùng hủy đơn khi shop chưa xác nhận xử lý sâu.
+         * Rule hiện tại của hệ thống: cho hủy khi trạng thái pending hoặc processing.
+         * Có xử lý hoàn tiền với ví (nếu đơn đã thanh toán qua wallet).
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=orders');
             exit;
@@ -646,7 +673,9 @@ class OrderController
         $comment = $_POST['comment'] ?? '';
 
         try {
-            // Kiểm tra đơn hàng đã hoàn thành chưa
+            // NGHIỆP VỤ #8: Đánh giá sản phẩm sau mua.
+            // PHẦN NAM - ĐÁNH GIÁ SAU MUA:
+            // Chỉ cho phép người mua thật sự của đơn hàng được đánh giá.
             $order = $this->orderModel->getById($orderId);
             
             if (!$order || $order['user_id'] != $_SESSION['user']['id']) {
@@ -657,13 +686,13 @@ class OrderController
                 throw new Exception('Chỉ có thể đánh giá đơn hàng đã hoàn thành');
             }
 
-            // Kiểm tra đã đánh giá chưa
+            // Mỗi user chỉ được đánh giá 1 lần cho 1 sản phẩm trong 1 đơn hàng.
             $reviewModel = new Review();
             if ($reviewModel->hasUserReviewed($_SESSION['user']['id'], $productId, $orderId)) {
                 throw new Exception('Bạn đã đánh giá sản phẩm này rồi');
             }
 
-            // Tạo đánh giá
+            // Lưu đánh giá vào bảng reviews.
             $reviewModel->create([
                 ':user_id' => $_SESSION['user']['id'],
                 ':product_id' => $productId,
@@ -831,6 +860,13 @@ class OrderController
      */
     public function confirmReceived()
     {
+        /*
+         * NGHIỆP VỤ #7: Cộng điểm thưởng sau thanh toán/nhận hàng.
+         * Khi user xác nhận đã nhận hàng:
+         * - Đơn chuyển sang completed.
+         * - COD được đánh dấu paid.
+         * - Hệ thống cộng điểm loyalty và ghi log giao dịch điểm.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=orders');
             exit;

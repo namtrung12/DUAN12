@@ -28,6 +28,7 @@ class Coupon extends BaseModel
 
     public function isValid($coupon, $subtotal, $userRank = null)
     {
+        // NGHIỆP VỤ #6: kiểm tra coupon hợp lệ trước khi áp dụng vào đơn hàng.
         if (!$coupon) return false;
 
         // Kiểm tra trạng thái
@@ -117,6 +118,7 @@ class Coupon extends BaseModel
 
     public function create($data)
     {
+        // NGHIỆP VỤ #12: tạo mới coupon từ trang quản trị.
         $sql = "INSERT INTO {$this->table} 
                 (code, type, value, max_discount, min_order, usage_limit, used_count, required_rank, point_cost, is_redeemable, starts_at, expires_at, status, description) 
                 VALUES 
@@ -141,6 +143,7 @@ class Coupon extends BaseModel
 
     public function update($id, $data)
     {
+        // NGHIỆP VỤ #12: cập nhật cấu hình coupon.
         $sql = "UPDATE {$this->table} SET 
                 code = :code, 
                 type = :type, 
@@ -197,6 +200,7 @@ class Coupon extends BaseModel
 
     public function redeemCoupon($userId, $couponId, $pointsSpent)
     {
+        // NGHIỆP VỤ #14: ghi nhận user đã đổi coupon bằng điểm.
         // Thêm vào bảng user_redeemed_coupons
         $sql = "INSERT INTO user_redeemed_coupons (user_id, coupon_id, points_spent) 
                 VALUES (:user_id, :coupon_id, :points_spent)";

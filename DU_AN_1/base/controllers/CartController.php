@@ -36,6 +36,11 @@ class CartController
 
     public function index()
     {
+        /*
+         * NGHIỆP VỤ #3 (màn hình giỏ hàng): hiển thị các sản phẩm đã thêm vào cart của user.
+         * Luồng này cũng tính subtotal/topping/discount để chuẩn bị cho nghiệp vụ #5 (đặt hàng).
+         * Nếu người dùng chỉ chọn một phần item để thanh toán thì tổng tiền chỉ tính trên item đã chọn.
+         */
         // Kiểm tra nếu có selected_items từ session hoặc GET
         $selectedItemIds = [];
         if (isset($_SESSION['cart_selected_items']) && !empty($_SESSION['cart_selected_items'])) {
@@ -229,6 +234,11 @@ class CartController
 
     public function add()
     {
+        /*
+         * NGHIỆP VỤ #3: Thêm sản phẩm vào giỏ hàng.
+         * Validate bắt buộc: product tồn tại, size hợp lệ, số lượng hợp lệ, topping hợp lệ.
+         * Kết quả mong đợi: tạo bản ghi cart + cart_toppings trong DB cho user hiện tại.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=products');
             exit;
@@ -389,6 +399,14 @@ class CartController
 
     public function applyCoupon()
     {
+        /*
+         * NGHIỆP VỤ #6: Áp dụng mã giảm giá vào đơn.
+         * Rule chính:
+         * - Mã phải tồn tại/đang hoạt động/chưa hết hạn/chưa vượt usage_limit.
+         * - Đủ min_order.
+         * - Đúng hạng thành viên (required_rank) nếu có yêu cầu.
+         * - Với mã đổi điểm (is_redeemable=1): user phải đổi trước và chỉ dùng 1 lần.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=cart');
             exit;

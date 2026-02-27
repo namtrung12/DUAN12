@@ -6,6 +6,7 @@ class User extends BaseModel
 
     public function register($name, $email, $phone, $password)
     {
+        // NGHIỆP VỤ #4: tạo tài khoản mới cho người dùng (mặc định role_id=1).
         $sql = "INSERT INTO {$this->table} (name, email, phone, password, role_id) VALUES (:name, :email, :phone, :password, 1)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
@@ -104,6 +105,7 @@ class User extends BaseModel
 
     public function updateRole($userId, $roleId)
     {
+        // NGHIỆP VỤ #11: admin đổi vai trò tài khoản.
         $sql = "UPDATE {$this->table} SET role_id = :role_id WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
@@ -114,6 +116,7 @@ class User extends BaseModel
 
     public function lockMultiple($userIds, $excludeUserId = null)
     {
+        // NGHIỆP VỤ #11: khóa nhiều tài khoản bằng cách set is_active = 0.
         // Loại trừ user hiện tại (admin không thể tự khóa bản thân)
         if ($excludeUserId) {
             $userIds = array_filter($userIds, fn($id) => $id != $excludeUserId);
@@ -132,6 +135,7 @@ class User extends BaseModel
 
     public function unlockMultiple($userIds)
     {
+        // NGHIỆP VỤ #11: mở khóa nhiều tài khoản bằng cách set is_active = 1.
         if (empty($userIds)) {
             return 0;
         }

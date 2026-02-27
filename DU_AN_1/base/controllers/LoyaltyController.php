@@ -23,6 +23,10 @@ class LoyaltyController
 
     public function index()
     {
+        /*
+         * NGHIỆP VỤ #14: Người dùng xem điểm thưởng và lịch sử tích/tiêu điểm.
+         * Hiển thị total_points, lifetime_points, rank hiện tại và các giao dịch điểm.
+         */
         $loyaltyPoints = $this->loyaltyPointModel->getByUserId($_SESSION['user']['id']);
         
         if (!$loyaltyPoints) {
@@ -55,6 +59,10 @@ class LoyaltyController
 
     public function rewards()
     {
+        /*
+         * NGHIỆP VỤ #14 (đổi quà): hiển thị danh sách coupon có thể đổi bằng điểm.
+         * User nhìn được mức điểm hiện có để quyết định đổi mã.
+         */
         $loyaltyPoints = $this->loyaltyPointModel->getByUserId($_SESSION['user']['id']);
         
         if (!$loyaltyPoints) {
@@ -75,6 +83,12 @@ class LoyaltyController
 
     public function redeem()
     {
+        /*
+         * NGHIỆP VỤ #14 (thực thi đổi quà):
+         * - Kiểm tra coupon có redeem được hay không.
+         * - Kiểm tra user chưa đổi mã đó trước đó.
+         * - Kiểm tra đủ điểm rồi trừ điểm + lưu lịch sử đổi + ghi log transaction.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=loyalty-rewards');
             exit;

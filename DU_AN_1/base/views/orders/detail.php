@@ -86,14 +86,6 @@
                                         Đã nhận hàng
                                     </button>
                                 </form>
-                                <form method="POST" action="<?= BASE_URL ?>?action=order-delivery-cancel" onsubmit="return confirm('Bạn chắc chắn muốn từ chối nhận / trả hàng cho đơn này?');">
-                                    <input type="hidden" name="order_id" value="<?= $order['id'] ?>" />
-                                    <input type="hidden" name="cancel_reason" value="Khách từ chối nhận khi đang giao" />
-                                    <button type="submit" class="px-3 py-2 text-sm border border-red-300 text-red-600 rounded-lg font-semibold hover:bg-red-50 transition-colors flex items-center gap-1.5 whitespace-nowrap">
-                                        <span class="material-icons text-base">assignment_late</span>
-                                        Từ chối nhận
-                                    </button>
-                                </form>
                             <?php endif; ?>
                         </div>
                     </div>

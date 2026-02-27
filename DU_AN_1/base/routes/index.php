@@ -2,6 +2,25 @@
 
 $action = $_GET['action'] ?? '/';
 
+/*
+ * BẢN ĐỒ NGHIỆP VỤ THEO BẢNG PHÂN CÔNG (để tiện vấn đáp):
+ * #1  Xem danh sách sản phẩm: products, products-by-category
+ * #2  Xem chi tiết sản phẩm: product-detail
+ * #3  Thêm vào giỏ hàng: cart-add (và các action cart)
+ * #4  Đăng ký/đăng nhập: register, post-register, login, post-login, logout
+ * #5  Đặt hàng: checkout, checkout-process, order-success
+ * #6  Áp dụng mã giảm giá: cart-apply-coupon, cart-remove-coupon
+ * #7  Cộng điểm thưởng sau mua: order-confirm-received (gọi loyalty)
+ * #8  Đánh giá sau mua: order-review (admin duyệt qua admin-reviews)
+ * #9  Admin CRUD sản phẩm: admin-product-*
+ * #10 Admin quản lý đơn hàng: admin-orders, admin-order-update, admin-order-cancel
+ * #11 Admin quản lý người dùng: admin-users, admin-user-update-role, admin-users-lock/unlock-multiple
+ * #12 Admin quản lý mã giảm giá: admin-coupon-*
+ * #13 User xem lịch sử đơn: orders, order-detail
+ * #14 User xem điểm/đổi quà: loyalty, loyalty-rewards, loyalty-redeem
+ * #15 Admin cấu hình hệ thống: admin-settings, admin-settings-update
+ * #16 User theo dõi trạng thái và hủy đơn khi đủ điều kiện: orders, order-detail, order-cancel
+ */
 match ($action) {
     '/'                     => (new HomeController)->index(),
     'login'                 => (new AuthController)->showLogin(),

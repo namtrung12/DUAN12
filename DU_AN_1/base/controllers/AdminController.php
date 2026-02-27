@@ -44,6 +44,10 @@ class AdminController
 
     public function orders()
     {
+        /*
+         * NGHIỆP VỤ #10: Admin quản lý đơn hàng.
+         * Màn hình này cho phép lọc theo trạng thái và xem chi tiết item/topping của từng đơn.
+         */
         // Tự động hoàn thành các đơn hàng đang giao quá 30 phút
         $this->orderModel->autoCompleteDeliveringOrders();
         
@@ -87,7 +91,8 @@ class AdminController
         }
 
         try {
-            // Lấy thông tin đơn hàng
+            // PHẦN NAM - QUẢN LÝ ĐƠN HÀNG (ADMIN):
+            // Lấy trạng thái hiện tại để kiểm soát luồng chuyển trạng thái.
             $order = $this->orderModel->getById($orderId);
             $currentStatus = $order['status'];
             
@@ -102,7 +107,10 @@ class AdminController
                 'cancelled' => -1 // Có thể hủy từ bất kỳ trạng thái nào (trừ completed)
             ];
             
-            // Kiểm tra logic chuyển trạng thái
+            // Rule quan trọng:
+            // - Không cho quay lùi trạng thái.
+            // - Không cho nhảy cóc nhiều bước.
+            // - Không đổi trạng thái khi đơn đã completed/cancelled.
             if ($newStatus === 'cancelled') {
                 // Không cho phép hủy đơn đã hoàn thành
                 if ($currentStatus === 'completed') {
@@ -139,7 +147,7 @@ class AdminController
                 }
             }
             
-            // Cập nhật trạng thái đơn hàng
+            // Cập nhật trạng thái hợp lệ sau khi pass toàn bộ rule.
             $this->orderModel->updateStatus($orderId, $newStatus);
             
             // Nếu đơn COD được chuyển sang completed → cập nhật payment_status = paid
@@ -147,7 +155,7 @@ class AdminController
                 $this->orderModel->updatePaymentStatus($orderId, 'paid');
             }
 
-            // Gửi thông báo cho user khi thay đổi trạng thái đơn hàng
+            // Gửi thông báo cho user theo từng mốc xử lý đơn.
             $notificationModel = new Notification();
             $orderCode = str_pad($orderId, 6, '0', STR_PAD_LEFT);
             
@@ -196,6 +204,11 @@ class AdminController
 
     public function cancelOrder()
     {
+        /*
+         * NGHIỆP VỤ #10 (nhánh hủy đơn từ admin):
+         * Chỉ cho hủy ở pending/processing, lưu lý do hủy và gửi thông báo cho khách.
+         * Nếu đơn đã trả bằng ví thì hoàn tiền trực tiếp vào wallet_transactions.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-orders');
             exit;
@@ -282,6 +295,10 @@ class AdminController
 
     public function users()
     {
+        /*
+         * NGHIỆP VỤ #11: Admin quản lý người dùng.
+         * Hiển thị danh sách tài khoản có phân trang để đổi role/khóa/mở khóa.
+         */
         $perPage = 10;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         
@@ -294,6 +311,7 @@ class AdminController
 
     public function updateUserRole()
     {
+        // NGHIỆP VỤ #11: cập nhật vai trò người dùng (customer/admin/staff tùy role_id).
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-users');
             exit;
@@ -321,6 +339,7 @@ class AdminController
 
     public function lockMultipleUsers()
     {
+        // NGHIỆP VỤ #11: khóa nhiều tài khoản cùng lúc để xử lý vi phạm hoặc bảo trì.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-users');
             exit;
@@ -354,6 +373,7 @@ class AdminController
 
     public function unlockMultipleUsers()
     {
+        // NGHIỆP VỤ #11: mở khóa hàng loạt, khôi phục quyền đăng nhập cho user.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-users');
             exit;
@@ -380,6 +400,7 @@ class AdminController
 
     public function reviews()
     {
+        // NGHIỆP VỤ #8 (hậu kiểm): admin xem danh sách đánh giá để kiểm duyệt hiển thị.
         $status = $_GET['status'] ?? '';
         
         if ($status !== '') {
@@ -393,6 +414,7 @@ class AdminController
 
     public function updateReviewStatus()
     {
+        // NGHIỆP VỤ #8 (duyệt đánh giá): bật/tắt trạng thái hiển thị review.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-reviews');
             exit;

@@ -27,6 +27,10 @@ class CouponController
 
     public function index()
     {
+        /*
+         * NGHIỆP VỤ #12: Admin quản lý mã giảm giá.
+         * Danh sách này dùng để theo dõi vòng đời coupon: đang chạy, hết hạn, số lượt đã dùng.
+         */
         $coupons = $this->couponModel->getAllAdmin();
         require_once PATH_VIEW . 'admin/coupons.php';
     }
@@ -38,6 +42,13 @@ class CouponController
 
     public function store()
     {
+        /*
+         * NGHIỆP VỤ #12 (CREATE coupon):
+         * Tạo mới mã giảm giá với các ràng buộc:
+         * - code duy nhất.
+         * - value hợp lệ theo type (fixed/percent).
+         * - cấu hình min_order, usage_limit, required_rank, thời gian hiệu lực.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-coupons');
             exit;
@@ -123,6 +134,10 @@ class CouponController
 
     public function update()
     {
+        /*
+         * NGHIỆP VỤ #12 (UPDATE coupon):
+         * Cập nhật cấu hình mã đang tồn tại, vẫn giữ các validate nghiệp vụ giống tạo mới.
+         */
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . BASE_URL . '?action=admin-coupons');
             exit;
@@ -194,6 +209,7 @@ class CouponController
 
     public function delete()
     {
+        // NGHIỆP VỤ #12 (DELETE coupon): xóa một mã giảm giá theo id.
         $id = $_GET['id'] ?? 0;
 
         try {
@@ -209,6 +225,7 @@ class CouponController
 
     public function deleteMultiple()
     {
+        // NGHIỆP VỤ #12 (BULK DELETE): xóa nhiều mã trong cùng thao tác quản trị.
         $ids = $_GET['ids'] ?? '';
         
         if (empty($ids)) {
