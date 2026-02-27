@@ -42,3 +42,4 @@ if ($baseUrl === null) {
 }
 
 define('BASE_URL', $baseUrl);
+define('BASE_ASSETS_UPLOADS', BASE_URL . 'assets/uploads/');

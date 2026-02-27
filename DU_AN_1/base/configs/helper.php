@@ -1,29 +1,9 @@
 <?php
 
-// Define path constants
-define('PATH_BASE', __DIR__ . '/../');
-define('PATH_MODEL', PATH_BASE . 'models/');
-define('PATH_CONTROLLER', PATH_BASE . 'controllers/');
-define('PATH_VIEW', PATH_BASE . 'views/');
-define('PATH_ASSETS_UPLOADS', PATH_BASE . 'assets/uploads/');
-
-// Database configuration
-define('DB_HOST', 'localhost');
-define('DB_PORT', '3306');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'du_an1');
-define('DB_OPTIONS', [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
-]);
-
-// Base URL
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'];
-$scriptPath = dirname($_SERVER['SCRIPT_NAME']);
-define('BASE_URL', $protocol . '://' . $host . $scriptPath . '/');
+// Ensure configuration constants are available when this file is loaded directly.
+if (!defined('PATH_ASSETS_UPLOADS') || !defined('DB_HOST') || !defined('BASE_URL')) {
+    require_once __DIR__ . '/env.php';
+}
 
 if (!function_exists('debug')) {
     function debug($data)

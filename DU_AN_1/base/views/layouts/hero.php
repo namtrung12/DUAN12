@@ -80,17 +80,17 @@ try {
                 <div class="absolute -bottom-24 -left-16 w-72 h-72 rounded-full bg-[#ffd9bd]/20 blur-3xl"></div>
                 <?php endif; ?>
 
-                <div class="absolute inset-0 bg-gradient-to-t from-black/68 via-black/24 to-black/15"></div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-t from-black/68 via-black/24 to-black/15"
+                    style="background: linear-gradient(to top, rgba(0,0,0,0.78), rgba(0,0,0,0.36), rgba(0,0,0,0.2));"
+                ></div>
 
                 <div class="relative z-10 h-full p-5 sm:p-6 flex flex-col justify-end">
-                    <div class="max-w-lg rounded-2xl bg-black/58 border border-white/25 backdrop-blur-sm p-4 sm:p-5">
+                    <div class="max-w-lg rounded-2xl bg-black/58 border border-white/25 backdrop-blur-sm p-4 sm:p-5" style="background-color: rgba(0, 0, 0, 0.72);">
                         <p class="text-white/75 text-xs tracking-[0.14em] uppercase">Chill Drink</p>
                         <h3 class="text-white text-xl sm:text-2xl font-bold mt-1 leading-tight">
                             Mỗi ly là một công thức được cá nhân hóa cho bạn
                         </h3>
-                        <p class="text-white/85 text-sm sm:text-base mt-2 leading-relaxed">
-                            Chữ luôn hiển thị trên nền tối để không bị chìm dù banner sáng hay tối.
-                        </p>
                     </div>
                 </div>
 
