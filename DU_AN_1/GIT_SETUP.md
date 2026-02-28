@@ -1,18 +1,29 @@
-# Hướng dẫn đẩy project lên GitHub
+# 🚀 Hướng dẫn Git & GitHub cho Project
 
-## Bước 1: Khởi tạo Git (chỉ làm 1 lần)
+## 📋 Mục lục
+- [Khởi tạo Git](#bước-1-khởi-tạo-git)
+- [Kết nối GitHub](#bước-2-kết-nối-với-github)
+- [Cài đặt GitHub Desktop](#bước-3-cài-đặt-github-desktop)
+- [Quản lý thành viên](#bước-4-mời-thành-viên-vào-repository)
+- [Clone project](#bước-5-thành-viên-clone-project)
+- [Cấu hình database](#bước-6-cấu-hình-database-cho-thành-viên)
+- [Quy trình làm việc](#quy-trình-làm-việc-hàng-ngày)
+
+---
+
+## Bước 1: Khởi tạo Git
 
 ```bash
 # Di chuyển vào thư mục project
 cd C:\xampp\htdocs\DU_AN_1
 
-# Khởi tạo git
+# Khởi tạo git repository
 git init
 
-# Thêm tất cả file vào staging
+# Thêm tất cả file vào staging area
 git add .
 
-# Commit lần đầu
+# Tạo commit đầu tiên
 git commit -m "Initial commit: Pizza Store project with admin features"
 ```
 
