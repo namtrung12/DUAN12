@@ -1,32 +1,49 @@
-# 🔧 HƯỚNG DẪN SỬA LỖI SẢN PHẨM KHÔNG HIỂN THỊ
+# 🔧 Hướng dẫn Troubleshooting & Debug
 
-## 📋 Các bước kiểm tra và sửa lỗi
+## 📋 Mục lục
+- [Kiểm tra hệ thống](#bước-1-kiểm-tra-hệ-thống)
+- [Kiểm tra Database](#bước-2-kiểm-tra-database)
+- [Kiểm tra dữ liệu](#bước-3-kiểm-tra-dữ-liệu-sản-phẩm)
+- [Kiểm tra cấu hình](#bước-4-kiểm-tra-cấu-hình)
+- [Xem log lỗi](#bước-5-xem-log-lỗi)
+- [Test từng trang](#bước-6-test-từng-trang)
+- [Lỗi thường gặp](#-các-lỗi-thường-gặp)
 
-### Bước 1: Kiểm tra hệ thống
+---
+
+## Bước 1: Kiểm tra hệ thống
+
 Truy cập trang debug để xem chi tiết lỗi:
 ```
 http://localhost/DU_AN_1/base/debug.php
 ```
-(Thay đổi đường dẫn phù hợp với cấu hình của bạn)
 
-### Bước 2: Kiểm tra Database
+> Thay đổi đường dẫn phù hợp với cấu hình của bạn
 
-#### 2.1. Kiểm tra MySQL đã chạy chưa
-- Mở XAMPP/WAMP/MAMP
-- Đảm bảo MySQL đang chạy (màu xanh)
+---
 
-#### 2.2. Kiểm tra database tồn tại
-1. Mở phpMyAdmin: `http://localhost/phpmyadmin`
-2. Kiểm tra có database tên `du_an1` không
-3. Nếu chưa có, tạo database mới tên `du_an1`
+## Bước 2: Kiểm tra Database
 
-#### 2.3. Import dữ liệu
+### 2.1. Kiểm tra MySQL Service
+- Mở XAMPP/WAMP/MAMP Control Panel
+- Đảm bảo MySQL đang chạy (status màu xanh)
+- Nếu chưa chạy, click "Start"
+
+### 2.2. Kiểm tra Database tồn tại
+1. Truy cập phpMyAdmin: `http://localhost/phpmyadmin`
+2. Kiểm tra database `du_an1` trong danh sách bên trái
+3. Nếu chưa có, tạo database mới:
+   ```sql
+   CREATE DATABASE du_an1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+
+### 2.3. Import dữ liệu
 1. Chọn database `du_an1`
 2. Click tab "Import"
 3. Chọn file `du_an1 (6).sql`
-4. Click "Go" để import
+4. Click "Go" để thực thi import
 
-### Bước 3: Kiểm tra dữ liệu sản phẩm
+--- Bước 3: Kiểm tra dữ liệu sản phẩm
 
 #### 3.1. Chạy query kiểm tra
 Trong phpMyAdmin, chọn database `du_an1`, vào tab SQL và chạy:
@@ -98,92 +115,114 @@ Kiểm tra danh sách sản phẩm trong admin.
 
 ## 🚨 Các lỗi thường gặp
 
-### Lỗi 1: "Kết nối database thất bại"
+### ❌ Lỗi 1: "Kết nối database thất bại"
+
 **Nguyên nhân:**
-- MySQL chưa chạy
-- Thông tin database sai
-- Database chưa tồn tại
+- MySQL service chưa được khởi động
+- Thông tin kết nối database không chính xác
+- Database chưa được tạo
 
 **Giải pháp:**
-1. Bật MySQL trong XAMPP
-2. Kiểm tra lại thông tin trong `configs/env.php`
-3. Tạo database `du_an1` nếu chưa có
-
-### Lỗi 2: "Không tìm thấy sản phẩm nào"
-**Nguyên nhân:**
-- Database chưa có dữ liệu
-- Tất cả sản phẩm có `status = 0`
-- Tất cả sản phẩm đã bị xóa (`deleted_at` không NULL)
-
-**Giải pháp:**
-```sql
--- Kích hoạt tất cả sản phẩm
-UPDATE products SET status = 1, deleted_at = NULL;
-```
-
-### Lỗi 3: "Ảnh sản phẩm không hiển thị"
-**Nguyên nhân:**
-- File ảnh không tồn tại
-- Đường dẫn sai
-- Quyền truy cập thư mục
-
-**Giải pháp:**
-1. Kiểm tra file ảnh trong `base/assets/uploads/`
-2. Đảm bảo tên file trong database khớp với file thực tế
-3. Kiểm tra quyền thư mục (755)
-
-### Lỗi 4: "Trang trắng, không có gì hiển thị"
-**Nguyên nhân:**
-- Lỗi PHP nghiêm trọng
-- Thiếu file
-
-**Giải pháp:**
-1. Kiểm tra file `error.log`
-2. Đảm bảo tất cả file cần thiết tồn tại
-3. Kiểm tra syntax PHP
-
-## 📝 Checklist kiểm tra nhanh
-
-- [ ] MySQL đang chạy
-- [ ] Database `du_an1` tồn tại
-- [ ] File SQL đã được import
-- [ ] Có ít nhất 1 sản phẩm với `status=1` và `deleted_at=NULL`
-- [ ] File `configs/env.php` có thông tin đúng
-- [ ] Thư mục `assets/uploads/` có ảnh sản phẩm
-- [ ] Không có lỗi hiển thị trên trang
-- [ ] Trang debug.php chạy được
-
-## 🆘 Vẫn không được?
-
-### Giải pháp cuối cùng: Reset toàn bộ
-
-1. **Xóa database cũ:**
-```sql
-DROP DATABASE IF EXISTS du_an1;
-CREATE DATABASE du_an1;
-```
-
-2. **Import lại file SQL:**
-- Chọn database `du_an1`
-- Import file `du_an1 (6).sql`
-
-3. **Kiểm tra lại:**
-- Truy cập `debug.php`
-- Xem tất cả thông tin có đúng không
-
-4. **Nếu vẫn lỗi:**
-- Chụp màn hình trang debug.php
-- Chụp màn hình lỗi (nếu có)
-- Kiểm tra file error.log
-
-## 📞 Liên hệ hỗ trợ
-
-Nếu vẫn gặp vấn đề, cung cấp thông tin sau:
-1. Screenshot trang debug.php
-2. Screenshot lỗi (nếu có)
-3. Nội dung file error.log
-4. Phiên bản PHP, MySQL đang dùng
+1. Khởi động MySQL trong XAMPP Control Panel
+2. Xác minh thông tin trong `base/configs/env.php`
+3. Tạo database `du_an1` nếu chưa tồn tại
 
 ---
 
-**Lưu ý:** Sau khi sửa xong, có thể xóa file `debug.php` để bảo mật.
+### ❌ Lỗi 2: "Không tìm thấy sản phẩm nào"
+
+**Nguyên nhân:**
+- Database chưa có dữ liệu sản phẩm
+- Tất cả sản phẩm có `status = 0` (bị ẩn)
+- Sản phẩm đã bị soft delete (`deleted_at IS NOT NULL`)
+
+**Giải pháp:**
+```sql
+-- Kích hoạt và khôi phục tất cả sản phẩm
+UPDATE products 
+SET status = 1, deleted_at = NULL 
+WHERE 1=1;
+```
+
+---
+
+### ❌ Lỗi 3: "Ảnh sản phẩm không hiển thị"
+
+**Nguyên nhân:**
+- File ảnh không tồn tại trong thư mục uploads
+- Đường dẫn ảnh trong database không chính xác
+- Quyền truy cập thư mục bị hạn chế
+
+**Giải pháp:**
+1. Kiểm tra file ảnh trong `base/assets/uploads/products/`
+2. Đảm bảo tên file trong database khớp với file thực tế
+3. Cấp quyền đọc cho thư mục (chmod 755 trên Linux/Mac)
+
+---
+
+### ❌ Lỗi 4: "Trang trắng, không có nội dung"
+
+**Nguyên nhân:**
+- Lỗi PHP fatal error
+- File bị thiếu hoặc đường dẫn sai
+- Syntax error trong code
+
+**Giải pháp:**
+1. Kiểm tra Apache error log
+2. Xác minh tất cả file cần thiết tồn tại
+3. Kiểm tra PHP syntax errors
+
+---
+
+## 📝 Checklist kiểm tra nhanh
+
+- [ ] MySQL service đang chạy
+- [ ] Database `du_an1` đã được tạo
+- [ ] File SQL đã được import thành công
+- [ ] Có ít nhất 1 sản phẩm với `status=1` và `deleted_at=NULL`
+- [ ] File `base/configs/env.php` có thông tin kết nối chính xác
+- [ ] Thư mục `base/assets/uploads/` chứa ảnh sản phẩm
+- [ ] Không có PHP errors hiển thị trên trang
+- [ ] Trang `debug.php` chạy và hiển thị thông tin đầy đủ
+
+---
+
+## 🆘 Giải pháp cuối cùng: Reset toàn bộ
+
+Nếu tất cả các bước trên không giải quyết được vấn đề:
+
+### 1. Xóa và tạo lại database
+```sql
+DROP DATABASE IF EXISTS du_an1;
+CREATE DATABASE du_an1 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 2. Import lại dữ liệu
+- Chọn database `du_an1` trong phpMyAdmin
+- Import file `du_an1 (6).sql`
+- Đợi quá trình import hoàn tất
+
+### 3. Xác minh lại
+- Truy cập `http://localhost/DU_AN_1/base/debug.php`
+- Kiểm tra tất cả thông tin hiển thị
+
+### 4. Nếu vẫn gặp lỗi
+Thu thập thông tin sau để debug:
+- Screenshot trang debug.php
+- Screenshot thông báo lỗi (nếu có)
+- Nội dung file Apache error.log
+- Phiên bản PHP và MySQL đang sử dụng
+
+---
+
+## 📞 Hỗ trợ
+
+Khi cần hỗ trợ, vui lòng cung cấp:
+1. Screenshot trang `debug.php`
+2. Screenshot thông báo lỗi
+3. Nội dung file `error.log`
+4. Thông tin môi trường (PHP version, MySQL version, OS)
+
+---
+
+**Lưu ý bảo mật:** Sau khi hoàn tất debug, nên xóa hoặc đổi tên file `debug.php` để tránh lộ thông tin hệ thống.
