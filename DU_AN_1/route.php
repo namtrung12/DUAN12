@@ -1,20 +1,26 @@
 <?php
+/**
+ * Application Routes Configuration
+ * Defines all application routes and middleware filters
+ */
 
 use Phroute\Phroute\RouteCollector;
 
+// Get requested URL from query string
 $url = !isset($_GET['url']) ? "/" : $_GET['url'];
 
+// Initialize route collector
 $router = new RouteCollector();
 
-// filter check đăng nhập
+// Authentication middleware filter
 $router->filter('auth', function(){
     if(!isset($_SESSION['auth']) || empty($_SESSION['auth'])){
-        header('location: ' . BASE_URL . 'login');die;
+        header('location: ' . BASE_URL . 'login');
+        die;
     }
 });
 
-// khu vực cần quan tâm -----------
-// bắt đầu định nghĩa ra các đường dẫn
+// ============ HOME ROUTE ============
 $router->get('/', function(){
     return "trang chủ";
 });
@@ -49,16 +55,12 @@ $router->post('update-category/{id}', [App\Controllers\CategoryController::class
 // Xóa danh mục
 $router->get('delete-category/{id}', [App\Controllers\CategoryController::class, 'destroy']);
 
-// khu vực cần quan tâm -----------
-//$router->get('test', [App\Controllers\ProductController::class, 'index']);
-
-# NB. You can cache the return value from $router->getData() so you don't have to create the routes each request - massive speed gains
+// ============ DISPATCHER CONFIGURATION ============
+// Cache router data for performance optimization
 $dispatcher = new Phroute\Phroute\Dispatcher($router->getData());
 
+// Dispatch request and get response
 $response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $url);
 
-// Print out the value returned from the dispatched function
+// Output response
 echo $response;
-
-
-?>
