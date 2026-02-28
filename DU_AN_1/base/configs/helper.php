@@ -1,10 +1,18 @@
 <?php
+/**
+ * Helper Functions
+ * Common utility functions used throughout the application
+ */
 
-// Ensure configuration constants are available when this file is loaded directly.
+// Ensure configuration constants are available when this file is loaded directly
 if (!defined('PATH_ASSETS_UPLOADS') || !defined('DB_HOST') || !defined('BASE_URL')) {
     require_once __DIR__ . '/env.php';
 }
 
+/**
+ * Debug helper - prints data and stops execution
+ * @param mixed $data Data to debug
+ */
 if (!function_exists('debug')) {
     function debug($data)
     {
@@ -14,22 +22,29 @@ if (!function_exists('debug')) {
     }
 }
 
+/**
+ * Upload file to specified folder
+ * @param string $folder Target folder name
+ * @param array $file File data from $_FILES
+ * @return string Relative path to uploaded file
+ * @throws Exception If upload fails
+ */
 if (!function_exists('upload_file')) {
     function upload_file($folder, $file)
     {
-        // Tạo thư mục nếu chưa có
+        // Create directory if not exists
         $uploadDir = PATH_ASSETS_UPLOADS . $folder;
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        // Tạo tên file unique
+        // Generate unique filename
         $extension = pathinfo($file["name"], PATHINFO_EXTENSION);
         $filename = time() . '-' . uniqid() . '.' . $extension;
         $targetFile = $folder . '/' . $filename;
         $fullPath = PATH_ASSETS_UPLOADS . $targetFile;
 
-        // Upload file
+        // Move uploaded file
         if (move_uploaded_file($file["tmp_name"], $fullPath)) {
             return $targetFile;
         }
@@ -38,6 +53,10 @@ if (!function_exists('upload_file')) {
     }
 }
 
+/**
+ * Get site settings from database
+ * @return array Site settings key-value pairs
+ */
 if (!function_exists('get_site_settings')) {
     function get_site_settings()
     {
