@@ -115,9 +115,22 @@ class CategoryController
 
     public function delete()
     {
-        $id = $_GET['id'] ?? 0;
+        $id = (int) ($_GET['id'] ?? 0);
+
+        if ($id <= 0) {
+            $_SESSION['errors'] = ['delete' => 'Danh mục không hợp lệ'];
+            header('Location: ' . BASE_URL . '?action=admin-categories');
+            exit;
+        }
 
         try {
+            $productCount = $this->categoryModel->countProductsInCategory($id);
+            if ($productCount > 0) {
+                $_SESSION['errors'] = ['delete' => "Không thể xóa danh mục vì còn {$productCount} sản phẩm đang sử dụng."];
+                header('Location: ' . BASE_URL . '?action=admin-categories');
+                exit;
+            }
+
             $this->categoryModel->delete($id);
             $_SESSION['success'] = 'Xóa danh mục thành công';
         } catch (Exception $e) {
@@ -138,16 +151,33 @@ class CategoryController
             exit;
         }
 
-        $idArray = explode(',', $ids);
+        $idArray = array_unique(array_filter(array_map('intval', explode(',', $ids))));
         $successCount = 0;
+        $blockedCount = 0;
+        $blockedProductTotal = 0;
 
         try {
             foreach ($idArray as $id) {
-                if ($this->categoryModel->delete(trim($id))) {
+                $productCount = $this->categoryModel->countProductsInCategory($id);
+                if ($productCount > 0) {
+                    $blockedCount++;
+                    $blockedProductTotal += $productCount;
+                    continue;
+                }
+
+                if ($this->categoryModel->delete($id)) {
                     $successCount++;
                 }
             }
-            $_SESSION['success'] = "Đã xóa thành công {$successCount} danh mục";
+
+            if ($successCount > 0) {
+                $_SESSION['success'] = "Đã xóa thành công {$successCount} danh mục";
+            }
+            if ($blockedCount > 0) {
+                $_SESSION['errors'] = [
+                    'delete' => "Không thể xóa {$blockedCount} danh mục vì còn {$blockedProductTotal} sản phẩm đang sử dụng."
+                ];
+            }
         } catch (Exception $e) {
             $_SESSION['errors'] = ['delete' => 'Xóa danh mục thất bại'];
         }

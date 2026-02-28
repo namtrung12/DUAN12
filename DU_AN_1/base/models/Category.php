@@ -64,4 +64,13 @@ class Category extends BaseModel
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([':id' => $id]);
     }
+
+    public function countProductsInCategory($categoryId)
+    {
+        // Chỉ đếm sản phẩm chưa bị xóa mềm để tránh chặn xóa không cần thiết.
+        $sql = "SELECT COUNT(*) FROM products WHERE category_id = :category_id AND deleted_at IS NULL";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':category_id' => $categoryId]);
+        return (int) $stmt->fetchColumn();
+    }
 }
