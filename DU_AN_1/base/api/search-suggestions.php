@@ -24,12 +24,17 @@ try {
             FROM products p 
             LEFT JOIN categories c ON p.category_id = c.id 
             WHERE p.status = 1 
-            AND (p.name LIKE :keyword OR p.description LIKE :keyword OR c.name LIKE :keyword)
+            AND (p.name LIKE :keyword_name OR p.description LIKE :keyword_description OR c.name LIKE :keyword_category)
             ORDER BY p.name ASC
             LIMIT 5";
     
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([':keyword' => '%' . $keyword . '%']);
+    $keywordLike = '%' . $keyword . '%';
+    $stmt->execute([
+        ':keyword_name' => $keywordLike,
+        ':keyword_description' => $keywordLike,
+        ':keyword_category' => $keywordLike
+    ]);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($results);

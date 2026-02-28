@@ -15,11 +15,11 @@ class LoyaltyPoint extends BaseModel
     public function createOrUpdate($userId, $points, $lifetimePoints)
     {
         $sql = "INSERT INTO {$this->table} (user_id, total_points, lifetime_points, level) 
-                VALUES (:user_id, :total_points, :lifetime_points, :level)
+                VALUES (:user_id, :insert_total_points, :insert_lifetime_points, :insert_level)
                 ON DUPLICATE KEY UPDATE 
-                total_points = :total_points, 
-                lifetime_points = :lifetime_points,
-                level = :level,
+                total_points = :update_total_points, 
+                lifetime_points = :update_lifetime_points,
+                level = :update_level,
                 updated_at = NOW()";
         
         $level = $this->calculateLevel($lifetimePoints);
@@ -27,18 +27,25 @@ class LoyaltyPoint extends BaseModel
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':user_id' => $userId,
-            ':total_points' => $points,
-            ':lifetime_points' => $lifetimePoints,
-            ':level' => $level
+            ':insert_total_points' => $points,
+            ':insert_lifetime_points' => $lifetimePoints,
+            ':insert_level' => $level,
+            ':update_total_points' => $points,
+            ':update_lifetime_points' => $lifetimePoints,
+            ':update_level' => $level
         ]);
     }
 
     public function deductPoints($userId, $points)
     {
-        $sql = "UPDATE {$this->table} SET total_points = total_points - :points, updated_at = NOW() 
-                WHERE user_id = :user_id AND total_points >= :points";
+        $sql = "UPDATE {$this->table} SET total_points = total_points - :points_delta, updated_at = NOW() 
+                WHERE user_id = :user_id AND total_points >= :points_guard";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([':user_id' => $userId, ':points' => $points]);
+        return $stmt->execute([
+            ':user_id' => $userId,
+            ':points_delta' => $points,
+            ':points_guard' => $points
+        ]);
     }
 
     public function getTransactions($userId)

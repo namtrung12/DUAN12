@@ -65,10 +65,15 @@ class Product extends BaseModel
         $sql = "SELECT p.*, c.name as category_name FROM {$this->table} p 
                 LEFT JOIN categories c ON p.category_id = c.id 
                 WHERE p.status = 1 AND p.deleted_at IS NULL
-                AND (p.name LIKE :keyword OR p.description LIKE :keyword OR c.name LIKE :keyword)
+                AND (p.name LIKE :keyword_name OR p.description LIKE :keyword_description OR c.name LIKE :keyword_category)
                 ORDER BY p.created_at DESC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':keyword' => '%' . $keyword . '%']);
+        $keywordLike = '%' . $keyword . '%';
+        $stmt->execute([
+            ':keyword_name' => $keywordLike,
+            ':keyword_description' => $keywordLike,
+            ':keyword_category' => $keywordLike
+        ]);
         return $stmt->fetchAll();
     }
 
@@ -78,11 +83,14 @@ class Product extends BaseModel
         $sql = "SELECT p.*, c.name as category_name FROM {$this->table} p 
                 LEFT JOIN categories c ON p.category_id = c.id 
                 WHERE p.status = 1 AND p.deleted_at IS NULL
-                AND (p.name LIKE :keyword OR p.description LIKE :keyword OR c.name LIKE :keyword)
+                AND (p.name LIKE :keyword_name OR p.description LIKE :keyword_description OR c.name LIKE :keyword_category)
                 ORDER BY p.created_at DESC
                 LIMIT :limit OFFSET :offset";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':keyword', '%' . $keyword . '%', PDO::PARAM_STR);
+        $keywordLike = '%' . $keyword . '%';
+        $stmt->bindValue(':keyword_name', $keywordLike, PDO::PARAM_STR);
+        $stmt->bindValue(':keyword_description', $keywordLike, PDO::PARAM_STR);
+        $stmt->bindValue(':keyword_category', $keywordLike, PDO::PARAM_STR);
         $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -94,9 +102,14 @@ class Product extends BaseModel
         $sql = "SELECT COUNT(*) FROM {$this->table} p 
                 LEFT JOIN categories c ON p.category_id = c.id 
                 WHERE p.status = 1 AND p.deleted_at IS NULL
-                AND (p.name LIKE :keyword OR p.description LIKE :keyword OR c.name LIKE :keyword)";
+                AND (p.name LIKE :keyword_name OR p.description LIKE :keyword_description OR c.name LIKE :keyword_category)";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':keyword' => '%' . $keyword . '%']);
+        $keywordLike = '%' . $keyword . '%';
+        $stmt->execute([
+            ':keyword_name' => $keywordLike,
+            ':keyword_description' => $keywordLike,
+            ':keyword_category' => $keywordLike
+        ]);
         return $stmt->fetchColumn();
     }
 

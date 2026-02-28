@@ -39,12 +39,15 @@ class LoyaltyReward extends BaseModel
                 FROM user_redeemed_coupons urc
                 JOIN coupons c ON urc.coupon_id = c.id
                 LEFT JOIN user_coupon_usage ucu ON ucu.user_id = urc.user_id AND ucu.coupon_id = urc.coupon_id
-                WHERE urc.user_id = :user_id
+                WHERE urc.user_id = :user_id_coupon
                 AND ucu.id IS NULL
                 
                 ORDER BY created_at DESC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId]);
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':user_id_coupon' => $userId
+        ]);
         return $stmt->fetchAll();
     }
 
